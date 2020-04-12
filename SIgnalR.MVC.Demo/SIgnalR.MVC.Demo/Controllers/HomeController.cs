@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using SIgnalR.MVC.Demo.Hubs;
 using SIgnalR.MVC.Demo.Models;
 
 namespace SIgnalR.MVC.Demo.Controllers
@@ -12,10 +14,13 @@ namespace SIgnalR.MVC.Demo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHubContext<WeatherHub> _weatherHubContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHubContext<WeatherHub> weatherHubContext)
         {
             _logger = logger;
+            // Dependency-Injection des 
+            _weatherHubContext = weatherHubContext;
         }
 
         public IActionResult Index()
@@ -23,10 +28,20 @@ namespace SIgnalR.MVC.Demo.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            await _weatherHubContext
+                .Clients
+                .All
+                .SendAsync("Broadcast", $"Privacy page visited at: {DateTime.Now}");
+
             return View();
         }
+
+        //public IActionResult Privacy()
+        //{
+        //    return View();
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

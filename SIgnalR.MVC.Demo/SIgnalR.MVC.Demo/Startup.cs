@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SIgnalR.MVC.Demo.Hubs;
 
 namespace SIgnalR.MVC.Demo
 {
@@ -23,6 +24,7 @@ namespace SIgnalR.MVC.Demo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllersWithViews();
         }
 
@@ -48,6 +50,8 @@ namespace SIgnalR.MVC.Demo
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<WeatherHub>("/weatherHub");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
