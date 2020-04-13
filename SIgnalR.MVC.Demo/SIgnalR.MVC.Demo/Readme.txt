@@ -59,7 +59,7 @@ Erstellen des Projektes
 		});
 
 7) Broadcast einer Message an alle Clients
-7.1) Ausgelöste durch ein serverseitiges Event
+7.1) Ausgelöst durch ein serverseitiges Event
 		Integratrion der SignalR-Funktionalität mittels Dependency-Injection
 		- Dem Konstruktor des relevanten Controllers wird eine Variabel vom Typ IHubContext<MyHubClass> übergeben.
 		- Der Konstruktor speichert dann diese Context-Variabel in einer eigenen privaten Variabel.
@@ -69,5 +69,16 @@ Erstellen des Projektes
 		     await _HubContext
                 .Clients
                 .All
-                .SendAsync("NameOfClientEvent", $"Privacy page visited at: {DateTime.Now}");
+                .SendAsync("NameOfClientEvent", messageText);
 
+7.2.) Ausgelöst durch ein clientseitiges Event
+		Hierzu ist zunächst die eigene Hub-Klasse um eine Funktion zu erweitern,
+		die mittels des Objekts Clients eine Message an die gewünschten Empfänger verschickt.
+		Dies ist möglich, da die eigene Hub-Klasse von SignarR-Klasse Hub erbt und somit
+		ebenfalls Zugriff hat auf die Funktionen, die oben genannten Hub-Context (siehe 7.1)
+		zur Verfügung stehen.
+		Beispiel:
+		public async Task BroadcastFromClient(string messageText)
+		{
+			await Clients.All.SendAsync("NameOfClientEvent", messageText);
+		}
